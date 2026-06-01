@@ -9,4 +9,7 @@ export interface OperatorChip {
 
 export const SUPPORTED_OPERATORS: readonly OperatorChip[] = [
   { symbol: '+', label: 'add' },
+  { symbol: '−', label: 'subtract' },
+  { symbol: '×', label: 'multiply' },
+  { symbol: '÷', label: 'divide' },
 ];

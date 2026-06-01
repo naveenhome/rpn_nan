@@ -1,6 +1,10 @@
 import * as fc from 'fast-check';
 import { evaluate } from './evaluator';
-import { MalformedExpressionError, OverflowError } from './errors';
+import {
+  DivisionByZeroError,
+  MalformedExpressionError,
+  OverflowError,
+} from './errors';
 
 describe('evaluate — addition (slice 1)', () => {
   it('adds two integers', () => {
@@ -25,6 +29,51 @@ describe('evaluate — addition (slice 1)', () => {
 
   it('collapses arbitrary surrounding whitespace', () => {
     expect(evaluate('   3   4    +  ')).toBe(7);
+  });
+});
+
+describe('evaluate — arithmetic (slice 2)', () => {
+  it.each([
+    ['10 4 -', 6],
+    ['6 7 *', 42],
+    ['20 4 /', 5],
+    ['3 4 + 2 *', 14],
+    ['2 3 4 * +', 14],
+    ['100 2 / 3 -', 47],
+  ])('evaluates %j → %d', (expr, expected) => {
+    expect(evaluate(expr)).toBe(expected);
+  });
+
+  it.each([
+    ['9 4 −', 5], // U+2212 minus
+    ['6 7 ×', 42], // multiplication sign
+    ['8 2 ÷', 4], // division sign
+  ])('normalizes glyph operator %j → %d', (expr, expected) => {
+    expect(evaluate(expr)).toBe(expected);
+  });
+
+  it.each(['5 0 /', '0 0 /', '7 0.0 /'])(
+    'throws DivisionByZeroError for %j',
+    (expr) => {
+      expect(() => evaluate(expr)).toThrow(DivisionByZeroError);
+      try {
+        evaluate(expr);
+      } catch (e) {
+        expect((e as DivisionByZeroError).code).toBe('DIV_BY_ZERO');
+      }
+    },
+  );
+
+  it('multiplication is commutative for finite operands', () => {
+    fc.assert(
+      fc.property(
+        fc.float({ noNaN: true, min: -1e3, max: 1e3 }),
+        fc.float({ noNaN: true, min: -1e3, max: 1e3 }),
+        (a, b) => {
+          expect(evaluate(`${a} ${b} *`)).toBe(evaluate(`${b} ${a} *`));
+        },
+      ),
+    );
   });
 });
 

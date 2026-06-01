@@ -36,6 +36,15 @@ export class MalformedExpressionError extends RpnError {
   }
 }
 
+/** Division by zero — surfaced explicitly, never as Infinity/NaN. */
+export class DivisionByZeroError extends RpnError {
+  readonly code = 'DIV_BY_ZERO';
+
+  constructor(message = 'Division by zero is undefined.') {
+    super(message);
+  }
+}
+
 /** The final (or an intermediate) result is not a finite number. */
 export class OverflowError extends RpnError {
   readonly code = 'OVERFLOW';

@@ -1,15 +1,23 @@
-import { MalformedExpressionError, OverflowError } from './errors';
+import {
+  DivisionByZeroError,
+  MalformedExpressionError,
+  OverflowError,
+} from './errors';
 import { NUMBER_RE, tokenize } from './tokenizer';
 
 type BinaryOp = (a: number, b: number) => number;
 
-/**
- * Binary operators, keyed by token. Slices extend this map:
- * slice 2 adds `- * /`, slice 5 adds `^`. Unary operators (`%`, `!`) arrive in
- * slices 6/7 with their own map.
- */
+// Binary operators keyed by token; new operators extend this map.
 const BINARY_OPS: Record<string, BinaryOp> = {
   '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
+  '*': (a, b) => a * b,
+  '/': (a, b) => {
+    if (b === 0) {
+      throw new DivisionByZeroError();
+    }
+    return a / b;
+  },
 };
 
 /** Evaluate a whitespace-separated RPN expression to a finite float64. */
