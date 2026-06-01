@@ -11,6 +11,20 @@ describe('POST /api/v1/calculate', () => {
     expect(res.data.saved).toBe(false);
   });
 
+  it('evaluates a multi-operator expression', async () => {
+    const res = await axios.post<CalculateResponse>('/api/v1/calculate', {
+      expression: '3 4 + 2 *',
+    });
+    expect(res.status).toBe(201);
+    expect(res.data.result).toBe(14);
+  });
+
+  it('returns a 422 DIV_BY_ZERO envelope for division by zero', async () => {
+    const res = await axios.post('/api/v1/calculate', { expression: '5 0 /' });
+    expect(res.status).toBe(422);
+    expect((res.data as ApiError).code).toBe('DIV_BY_ZERO');
+  });
+
   it('returns a 422 envelope with a code for malformed input', async () => {
     const res = await axios.post('/api/v1/calculate', { expression: '3 +' });
     expect(res.status).toBe(422);

@@ -5,6 +5,7 @@ export const ERROR_COPY: Partial<Record<ErrorCode, string>> = {
   EMPTY: 'Enter an expression to evaluate.',
   UNKNOWN_TOKEN: 'That expression contains something I don’t recognize.',
   UNDERFLOW: 'There aren’t enough numbers for that operation.',
+  DIV_BY_ZERO: 'Cannot divide by zero.',
   LEFTOVER_OPERANDS:
     'That looks incomplete — check the operators and operands.',
   OVERFLOW: 'The result is too large to represent.',
