@@ -1,0 +1,16 @@
+{
+  "name": "rpn-engine",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/rpn-engine/src",
+  "projectType": "library",
+  "tags": ["scope:api", "type:engine"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/rpn-engine/jest.config.cts"
+      }
+    }
+  }
+}

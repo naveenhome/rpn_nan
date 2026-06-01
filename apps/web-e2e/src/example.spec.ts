@@ -1,8 +1,20 @@
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
+test('shows the calculator', async ({ page }) => {
   await page.goto('/');
+  await expect(page.locator('h1')).toHaveText('RPN Calculator');
+});
 
-  // Expect h1 to contain a substring.
-  expect(await page.locator('h1').innerText()).toContain('Welcome');
+test('evaluates an addition end-to-end', async ({ page }) => {
+  await page.goto('/');
+  await page.getByLabel('RPN expression').fill('3 4 +');
+  await page.getByRole('button', { name: 'Evaluate' }).click();
+  await expect(page.getByTestId('result')).toHaveText('= 7');
+});
+
+test('shows a friendly error for malformed input', async ({ page }) => {
+  await page.goto('/');
+  await page.getByLabel('RPN expression').fill('3 +');
+  await page.getByRole('button', { name: 'Evaluate' }).click();
+  await expect(page.getByTestId('error')).toBeVisible();
 });

@@ -9,5 +9,20 @@
   },
   "enabledPlugins": {
     "nx@nx-claude-plugins": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/review-changed.sh\"",
+            "timeout": 20,
+            "statusMessage": "Reviewing changed source…"
+          }
+        ]
+      }
+    ]
   }
 }

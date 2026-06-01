@@ -1,1 +1,55 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global theme tokens. Light by default; dark via system preference.
+   A manual toggle (persisted) lands in a later polish slice. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --border: #e2e5ea;
+  --muted: #5b6472;
+  --accent: #4f46e5; /* indigo */
+  --input-bg: #ffffff;
+  --chip-bg: #f3f4f6;
+  --code-bg: #eef0f3;
+  --error-bg: #fdecec;
+  --error-fg: #9b1c1c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --surface: #171a21;
+    --border: #2a2f3a;
+    --muted: #9aa4b2;
+    --accent: #818cf8; /* lighter indigo for AA contrast on dark */
+    --input-bg: #11141a;
+    --chip-bg: #1d212b;
+    --code-bg: #1d212b;
+    --error-bg: #3a1d1d;
+    --error-fg: #fca5a5;
+  }
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: #1a1d23;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #e6e9ee;
+  }
+}

@@ -45,3 +45,15 @@ Thumbs.db
 
 .nx/polygraph
 .angular
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Playwright
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
+.last-run.json
