@@ -1,2 +1,56 @@
-<app-nx-welcome></app-nx-welcome>
-<router-outlet></router-outlet>
+<main class="shell">
+  <section class="card" aria-labelledby="title">
+    <h1 id="title">RPN Calculator</h1>
+    <p class="hint">
+      Enter numbers and operators in postfix order — e.g.
+      <code>3 4 +</code> gives <code>7</code>.
+    </p>
+
+    <div class="form" [formGroup]="form">
+      <label class="field">
+        <span class="field__label">RPN expression</span>
+        <input
+          #exprInput
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          formControlName="expression"
+          placeholder="3 4 +"
+          (keydown.enter)="evaluate()"
+        />
+      </label>
+
+      <div class="chips" role="group" aria-label="Insert operator">
+        @for (op of operators; track op.symbol) {
+        <button
+          type="button"
+          class="chip"
+          [attr.aria-label]="op.label"
+          (click)="insert(op.symbol)"
+        >
+          {{ op.symbol }}
+        </button>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="evaluate"
+        [disabled]="busy()"
+        (click)="evaluate()"
+      >
+        Evaluate
+      </button>
+    </div>
+
+    <output class="result" aria-live="polite">
+      @if (result() !== null) {
+      <span data-testid="result">= {{ result() }}</span>
+      }
+    </output>
+
+    @if (error()) {
+    <div class="error" role="alert" data-testid="error">{{ error() }}</div>
+    }
+  </section>
+</main>

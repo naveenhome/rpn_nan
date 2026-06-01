@@ -13,7 +13,10 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "paths": {}
+    "paths": {
+      "@rpn/rpn-engine": ["./libs/rpn-engine/src/index.ts"],
+      "@rpn/shared-types": ["./libs/shared-types/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

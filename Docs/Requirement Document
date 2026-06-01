@@ -1,0 +1,47 @@
+## 1. Problem Statement
+
+Engineers and scientists frequently work with complex mathematical expressions where operator precedence ambiguity can lead to errors. Traditional infix calculators require parentheses and impose a cognitive overhead in managing precedence rules. Reverse Polish Notation (postfix) eliminates this ambiguity entirely — every expression has exactly one unambiguous evaluation order — making it the preferred input style in many scientific, engineering, and financial contexts (HP calculators, stack-based computation models, Forth programming).
+
+There is currently no dedicated web-based RPN calculator that combines a modern interface with server-side persistence of calculation history, depriving engineering teams of a shareable, auditable tool for computational workflows.
+
+---
+
+## 2. Goals
+
+1. **Correctness**: Evaluate all RPN expressions — including binary arithmetic, exponentiation, percentage, and factorial — with full IEEE 754 floating-point accuracy, producing zero silent errors on well-formed inputs.
+2. **Auditability**: Persist every calculation (expression + result + timestamp) to the database so users can review and reproduce prior work.
+3. **Usability**: A first-time user familiar with RPN notation should be able to enter and evaluate an expression within 30 seconds of opening the app, with no tutorial required.
+4. **Reliability**: The backend API should handle malformed or edge-case expressions (division by zero, factorial of non-integer, overflow) with clear, descriptive error messages rather than silent failures.
+5. **Delivery**: Ship a production-ready v1 by 2026-05-31 with all P0 requirements met.
+
+---
+
+## 3. Non-Goals
+
+- **User authentication / accounts**: All sessions are anonymous. Personalised history, user profiles, and multi-user isolation are explicitly out of scope for v1. (Rationale: adds significant backend complexity; the primary use case is single-user or shared-terminal contexts.)
+- **Voice or natural-language input**: Only keyboard text input is supported. (Rationale: NLP parsing of mathematical expressions is a separate, complex initiative.)
+- **Mobile-native apps**: The product is a responsive web app only; iOS/Android packaging is not in scope. (Rationale: separate distribution and build pipeline effort.)
+- **Graphing / plotting**: The calculator does not render graphs or visualisations of functions. (Rationale: out of scope for a computation-focused v1; a separate graphing module could be added in v2.)
+- **Arbitrary-precision arithmetic**: Results are computed using standard 64-bit floating-point. Arbitrary-precision libraries (e.g., bcmath beyond Laravel's defaults) are not required for v1. (Rationale: sufficient for the target audience's daily use.)
+
+---
+
+## 4. User Stories
+
+### Primary persona — engineer / scientist
+
+- As an engineer, I want to type an RPN expression (e.g., `3 4 + 2 *`) and immediately see the evaluated result so that I can verify computations without managing parentheses.
+- As a scientist, I want to use floating-point operands (e.g., `3.14 2.0 *`) so that my calculations reflect real-world measurements.
+- As a user, I want to use `^` for exponentiation (e.g., `2 10 ^`) so that I can compute powers without a separate function syntax.
+- As a user, I want to use `%` for percentage conversion (e.g., `75 %`) so that I can quickly convert percentages without knowing the formula.
+- As a user, I want to use `!` for factorial (e.g., `7 !`) so that I can compute combinatorial values inline.
+- As a user, I want to see a clear error message when I enter a malformed expression (e.g., `+ 3`) so that I understand what went wrong and can correct my input.
+- As a user, I want my calculation history persisted across page reloads so that I can reference prior results without retyping them.
+- As a user, I want to clear my calculation history so that I can start fresh without old entries cluttering my view.
+
+### Edge-case stories
+
+- As a user, I want to enter very large factorials (e.g., `20 !`) and receive an accurate integer result so that I can use the calculator for combinatorics.
+- As a user, I want to attempt `0 !` and receive `1` (mathematically correct) so that edge cases do not require workarounds.
+- As a user, I want to attempt division by zero (e.g., `5 0 /`) and receive an explicit error rather than `Infinity` or `NaN` so that I am not misled by a silent bad result.
+- As a user, I want to attempt factorial on a negative number (e.g., `-3 !`) and receive a descriptive error so that I understand the operation is undefined.

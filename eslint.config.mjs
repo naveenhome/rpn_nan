@@ -16,10 +16,23 @@ export default [
           enforceBuildableLibDependency: true,
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
           depConstraints: [
+            // Frontend may only use shared types — never the server-side engine.
             {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
+              sourceTag: 'scope:web',
+              onlyDependOnLibsWithTags: ['scope:web', 'scope:shared'],
             },
+            // Backend may use the engine and shared types.
+            {
+              sourceTag: 'scope:api',
+              onlyDependOnLibsWithTags: ['scope:api', 'scope:shared'],
+            },
+            // Shared types depend on nothing else.
+            {
+              sourceTag: 'scope:shared',
+              onlyDependOnLibsWithTags: ['scope:shared'],
+            },
+            // The engine is pure: it depends on no workspace lib.
+            { sourceTag: 'type:engine', onlyDependOnLibsWithTags: [] },
           ],
         },
       ],

@@ -16,33 +16,39 @@ const baseURL = process.env['BASE_URL'] || 'http://localhost:4200';
  */
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
+  forbidOnly: !!process.env['CI'],
+  retries: process.env['CI'] ? 2 : 0,
+  reporter: process.env['CI']
+    ? [['html', { open: 'never' }], ['list']]
+    : 'list',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npx nx run web:serve',
-    url: 'http://localhost:4200',
-    reuseExistingServer: true,
-    cwd: workspaceRoot,
-  },
+  /* Start both the API and the web app; the dev server proxies /api → :3000. */
+  webServer: [
+    {
+      command: 'npx nx run api:serve',
+      url: 'http://localhost:3000/api/v1/health',
+      reuseExistingServer: !process.env['CI'],
+      cwd: workspaceRoot,
+      timeout: 120_000,
+    },
+    {
+      command: 'npx nx run web:serve',
+      url: 'http://localhost:4200',
+      reuseExistingServer: !process.env['CI'],
+      cwd: workspaceRoot,
+      timeout: 120_000,
+    },
+  ],
+  /* Chromium-only for v1 to keep CI fast (decision #63). */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
     },
 
     // Uncomment for mobile browsers support
