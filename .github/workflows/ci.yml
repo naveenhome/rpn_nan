@@ -26,7 +26,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - uses: nrwl/nx-set-shas@v4
+      - uses: nrwl/nx-set-shas@v5
       - name: Lint, test, build (affected)
         run: npx nx affected -t lint test build
       - name: Security audit
@@ -51,7 +51,7 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: Install Playwright (chromium)
         run: npx playwright install --with-deps chromium
-      - uses: nrwl/nx-set-shas@v4
+      - uses: nrwl/nx-set-shas@v5
       - name: Playwright e2e (affected)
         run: npx nx affected -t e2e
       - name: Upload Playwright report
